@@ -1,6 +1,6 @@
 import { Zap } from "lucide-react";
 
-export default function Page() {
+export default async function Page() {
 	return (
 		<div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
 			<div className="text-center">

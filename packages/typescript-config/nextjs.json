@@ -4,8 +4,9 @@
   "extends": "./base.json",
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+		"module": "ESNext",
+		"moduleDetection": "force",
+		"moduleResolution": "Bundler",
     "allowJs": true,
     "jsx": "preserve",
     "noEmit": true

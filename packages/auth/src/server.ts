@@ -6,7 +6,7 @@ import { lastLoginMethod } from "better-auth/plugins";
 
 export const auth = betterAuth({
 	database: prismaAdapter(db, {
-		provider: "postgresql",
+		provider: "mysql",
 	}),
 	emailAndPassword: {
 		enabled: true,
@@ -14,4 +14,5 @@ export const auth = betterAuth({
 	plugins: [nextCookies(), lastLoginMethod()],
 });
 
+export { getSessionCookie } from "better-auth/cookies";
 export { toNextJsHandler } from "better-auth/next-js";

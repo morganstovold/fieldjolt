@@ -3,20 +3,22 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
-		"dev": "turbo run dev",
+		"dev": "dotenv -- turbo run dev",
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
 		"format": "biome format --write",
-		"db:generate": "turbo run db:generate",
-		"db:migrate": "turbo run db:migrate",
-		"db:deploy": "turbo run db:deploy"
+		"db:generate": "dotenv -- turbo run db:generate",
+		"db:migrate": "dotenv -- turbo run db:migrate",
+		"db:deploy": "dotenv -- turbo run db:deploy"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.4",
+		"dotenv-cli": "^10.0.0",
 		"turbo": "^2.5.6",
 		"typescript": "5.9.2"
 	},
 	"engines": {
 		"node": ">=18"
-	}
+	},
+	"packageManager": "pnpm@10.12.1"
 }

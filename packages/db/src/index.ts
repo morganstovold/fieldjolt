@@ -2,7 +2,7 @@ import { Client } from "@planetscale/database";
 import { PrismaPlanetScale } from "@prisma/adapter-planetscale";
 import { PrismaClient } from "@prisma/client";
 
-import { env } from "@workspace/db/env";
+import { env } from "./env";
 
 const psClient = new Client({ url: env.DATABASE_URL });
 

@@ -11,6 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.2.4
         version: 2.2.4
+      dotenv-cli:
+        specifier: ^10.0.0
+        version: 10.0.0
       turbo:
         specifier: ^2.5.6
         version: 2.5.6
@@ -20,6 +23,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@prisma/client':
+        specifier: ^6.16.1
+        version: 6.16.1(prisma@6.16.1(typescript@5.9.2))(typescript@5.9.2)
       '@t3-oss/env-nextjs':
         specifier: ^0.12.0
         version: 0.12.0(typescript@5.9.2)(zod@3.25.76)
@@ -131,15 +137,18 @@ importers:
       '@trpc/server':
         specifier: ^11.5.1
         version: 11.5.1(typescript@5.9.2)
+      '@types/react':
+        specifier: ^19.1.13
+        version: 19.1.13
       '@workspace/auth':
         specifier: workspace:*
         version: link:../auth
       '@workspace/db':
         specifier: workspace:*
         version: link:../db
-      react:
-        specifier: 19.1.1
-        version: 19.1.1
+      next:
+        specifier: ^15.5.3
+        version: 15.5.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -1126,8 +1135,20 @@ packages:
   dot-case@2.1.1:
     resolution: {integrity: sha512-HnM6ZlFqcajLsyudHq7LeeLDr2rFAVYtDv/hV5qchQEidSck8j9OPUsXY9KwJv/lHMtYlX4DjRQqwFYa+0r8Ug==}
 
+  dotenv-cli@10.0.0:
+    resolution: {integrity: sha512-lnOnttzfrzkRx2echxJHQRB6vOAMSCzzZg79IxpC00tU42wZPuZkQxNNrrwVAxaQZIIh001l4PxVlCrBxngBzA==}
+    hasBin: true
+
+  dotenv-expand@11.0.7:
+    resolution: {integrity: sha512-zIHwmZPRshsCdpMDyVsqGmgyP0yT8GAgXUnkdAoJisxvf33k7yO6OuoKmcTGuXPWSsm8Oh88nZicRLA9Y0rUeA==}
+    engines: {node: '>=12'}
+
   dotenv@16.6.1:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
+    engines: {node: '>=12'}
+
+  dotenv@17.2.2:
+    resolution: {integrity: sha512-Sf2LSQP+bOlhKWWyhFsn0UsfdK/kCWRv1iuA2gXAwt3dyNabr6QSj00I2V10pidqz69soatm9ZwZvpQMTIOd5Q==}
     engines: {node: '>=12'}
 
   effect@3.16.12:
@@ -2985,7 +3006,20 @@ snapshots:
     dependencies:
       no-case: 2.3.2
 
+  dotenv-cli@10.0.0:
+    dependencies:
+      cross-spawn: 7.0.6
+      dotenv: 17.2.2
+      dotenv-expand: 11.0.7
+      minimist: 1.2.8
+
+  dotenv-expand@11.0.7:
+    dependencies:
+      dotenv: 16.6.1
+
   dotenv@16.6.1: {}
+
+  dotenv@17.2.2: {}
 
   effect@3.16.12:
     dependencies:
