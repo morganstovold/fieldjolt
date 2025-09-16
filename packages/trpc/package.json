@@ -1,0 +1,27 @@
+{
+	"name": "@workspace/trpc",
+	"type": "module",
+	"private": true,
+	"scripts": {},
+	"exports": {
+		".": "./src/trpc.ts",
+		"./root": "./src/root.ts",
+		"./next/*": "./src/next/*"
+	},
+	"dependencies": {
+		"@workspace/db": "workspace:*",
+		"@workspace/auth": "workspace:*",
+		"@tanstack/react-query": "^5.87.4",
+		"@trpc/client": "^11.5.1",
+		"@trpc/react-query": "^11.5.1",
+		"@trpc/server": "^11.5.1",
+		"react": "19.1.1",
+		"server-only": "^0.0.1",
+		"superjson": "^2.2.2",
+		"zod": "^4.1.8"
+	},
+	"devDependencies": {
+		"@types/node": "^24.4.0",
+		"@workspace/typescript-config": "workspace:*"
+	}
+}

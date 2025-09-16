@@ -1,4 +1,13 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import "./src/env.js";
 
-export default nextConfig;
+/** @type {import('next').NextConfig} */
+const config = {
+	transpilePackages: [
+		"@workspace/ui",
+		"@workspace/auth",
+		"@workspace/db",
+		"@workspace/trpc",
+	],
+};
+
+export default config;

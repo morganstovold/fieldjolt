@@ -1,0 +1,26 @@
+{
+	"name": "@workspace/db",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"db:generate": "prisma migrate dev",
+		"db:migrate": "npx prisma migrate dev --skip-generate",
+		"db:deploy": "npx prisma migrate deploy",
+		"postinstall": "prisma generate"
+	},
+	"dependencies": {
+		"@planetscale/database": "^1.19.0",
+		"@prisma/adapter-planetscale": "^6.16.1",
+		"@prisma/client": "^6.16.1",
+		"@t3-oss/env-core": "^0.13.8",
+		"zod": "^4.1.8"
+	},
+	"devDependencies": {
+		"@types/node": "^24.4.0",
+		"@workspace/typescript-config": "workspace:*",
+		"prisma": "^6.16.1"
+	},
+	"exports": {
+		".": "./src/index.ts"
+	}
+}
