@@ -4,8 +4,7 @@
 	"private": true,
 	"scripts": {
 		"db:generate": "prisma generate",
-		"db:deploy": "prisma db push",
-		"postinstall": "prisma generate"
+		"db:deploy": "prisma db push"
 	},
 	"dependencies": {
 		"@planetscale/database": "^1.19.0",
