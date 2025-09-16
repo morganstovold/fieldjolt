@@ -1,5 +1,5 @@
-import { createCallerFactory, createTRPCRouter } from "@workspace/trpc/trpc";
 import { organizationsRouter } from "./routers/organizations";
+import { createCallerFactory, createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({
 	organizations: organizationsRouter,
