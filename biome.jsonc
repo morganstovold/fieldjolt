@@ -17,6 +17,12 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
+			"suspicious": {
+				"noUnknownAtRules": "off"
+			},
+			"correctness": {
+				"noInvalidPositionAtImportRule": "off"
+			},
 			"nursery": {
 				"useSortedClasses": {
 					"level": "warn",

@@ -32,6 +32,9 @@ importers:
       '@workspace/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@workspace/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@workspace/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -94,6 +97,8 @@ importers:
       '@workspace/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+
+  packages/config: {}
 
   packages/db:
     dependencies:

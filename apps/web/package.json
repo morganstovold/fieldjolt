@@ -14,6 +14,7 @@
 		"@t3-oss/env-nextjs": "^0.12.0",
 		"@workspace/auth": "workspace:*",
 		"@workspace/db": "workspace:*",
+		"@workspace/config": "workspace:*",
 		"@workspace/trpc": "workspace:*",
 		"@workspace/ui": "workspace:*",
 		"lucide-react": "^0.544.0",
