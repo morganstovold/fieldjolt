@@ -18,10 +18,12 @@
 		"enabled": true,
 		"rules": {
 			"suspicious": {
-				"noUnknownAtRules": "off"
+				"noUnknownAtRules": "off",
+				"noArrayIndexKey": "off"
 			},
 			"correctness": {
-				"noInvalidPositionAtImportRule": "off"
+				"noInvalidPositionAtImportRule": "off",
+				"useUniqueElementIds": "off"
 			},
 			"nursery": {
 				"useSortedClasses": {
@@ -31,6 +33,9 @@
 						"functions": ["clsx", "cva", "cn"]
 					}
 				}
+			},
+			"style": {
+				"noNonNullAssertion": "off"
 			},
 			"recommended": true
 		}

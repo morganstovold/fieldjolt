@@ -7,6 +7,8 @@ const config = {
 		"@workspace/auth",
 		"@workspace/db",
 		"@workspace/trpc",
+		"@workspace/lib",
+		"@workspace/config",
 	],
 };
 

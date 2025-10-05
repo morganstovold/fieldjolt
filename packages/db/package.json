@@ -7,8 +7,7 @@
 		"db:deploy": "prisma db push"
 	},
 	"dependencies": {
-		"@planetscale/database": "^1.19.0",
-		"@prisma/adapter-planetscale": "^6.16.1",
+		"@prisma/adapter-pg": "^6.16.3",
 		"@prisma/client": "^6.16.1",
 		"@t3-oss/env-core": "^0.13.8",
 		"zod": "^4.1.8"

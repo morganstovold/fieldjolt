@@ -1,10 +1,15 @@
 {
-	"name": "@workspace/config",
+	"name": "@workspace/lib",
 	"private": true,
 	"version": "0.0.0",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^24.5.0",
 		"@workspace/typescript-config": "workspace:*"
+	},
+	"dependencies": {
+		"@react-email/render": "^1.3.1",
+		"resend": "^6.1.2",
+		"stripe": "^19.1.0"
 	}
 }

@@ -5,6 +5,7 @@
 	"dependencies": {
 		"@t3-oss/env-core": "^0.13.8",
 		"@workspace/db": "workspace:*",
+		"@workspace/lib": "workspace:*",
 		"better-auth": "^1.3.9",
 		"zod": "^4.1.8"
 	},
