@@ -13,7 +13,8 @@ import {
 } from "@workspace/ui/components/sidebar";
 import { ChevronDown } from "lucide-react";
 
-export function AppSidebarHeader({ _session }: { _session: ValidSession }) {
+export function AppSidebarHeader({ session }: { session: ValidSession }) {
+	console.log(session);
 	return (
 		<SidebarHeader>
 			<SidebarMenu>
