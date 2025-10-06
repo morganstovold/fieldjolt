@@ -1,4 +1,4 @@
-import { getSessionCookie } from "@workspace/auth";
+import { getSessionCookie } from "@workspace/auth/getSessionCookie";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {

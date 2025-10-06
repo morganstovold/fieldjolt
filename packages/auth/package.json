@@ -17,6 +17,7 @@
 	},
 	"exports": {
 		".": "./src/server.ts",
-		"./client": "./src/client.ts"
+		"./client": "./src/client.ts",
+		"./getSessionCookie": "./src/getSessionCookie.ts"
 	}
 }

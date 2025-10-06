@@ -49,5 +49,4 @@ export type Session = Awaited<ReturnType<typeof getSession>>;
 
 export type ValidSession = NonNullable<Session>;
 
-export { getSessionCookie } from "better-auth/cookies";
 export { toNextJsHandler } from "better-auth/next-js";
