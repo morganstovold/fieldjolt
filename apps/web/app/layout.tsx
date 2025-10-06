@@ -3,7 +3,7 @@ import "@workspace/ui/globals.css";
 import { SITE_CONFIG } from "@workspace/config/site";
 import type { Metadata } from "next";
 import { Birthstone, Geist, Geist_Mono } from "next/font/google";
-import { Providers } from "../components/providers";
+import { Providers } from "../components/Providers";
 
 const fontSans = Geist({
 	subsets: ["latin"],

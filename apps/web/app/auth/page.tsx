@@ -16,15 +16,17 @@ import {
 import { Spinner } from "@workspace/ui/components/spinner";
 import { MailIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { EMAIL_REGEX } from "@/lib/utils";
 
 export default function AuthPage() {
 	const [transition, startTransition] = useTransition();
 	const [error, setError] = useState<string | null>(null);
+	const router = useRouter();
 
 	return (
-		<main className="flex h-dvh w-full items-center justify-center">
+		<main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background-lighter to-background">
 			<form
 				onSubmit={async (e) => {
 					e.preventDefault();
@@ -38,11 +40,16 @@ export default function AuthPage() {
 
 						const result = await authClient.signIn.magicLink({
 							email: e.currentTarget.email.value,
+							callbackURL: "/dashboard",
+							newUserCallbackURL: "/welcome",
+							errorCallbackURL: "/auth/error",
 						});
 
 						if (result.error) {
 							setError(result.error?.message || "Something went wrong");
 						}
+
+						router.push("/auth/magic");
 					});
 				}}
 				className="flex w-full max-w-sm flex-col gap-6"

@@ -17,6 +17,6 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts"
-	],
+, "../../packages/ui/src/components/breadcrumb.tsx", "../../packages/ui/src/components/button.tsx", "../../packages/ui/src/components/dropdown-menu.tsx", "../../packages/ui/src/components/input.tsx", "../../packages/ui/src/components/separator.tsx", "../../packages/ui/src/components/sheet.tsx", "../../packages/ui/src/components/sidebar.tsx", "../../packages/ui/src/components/skeleton.tsx", "../../packages/ui/src/components/tooltip.tsx"	],
 	"exclude": ["node_modules"]
 }
