@@ -8,8 +8,7 @@
 		"lint:fix": "biome check --write",
 		"format": "biome format --write",
 		"db:generate": "dotenv -- turbo run db:generate",
-		"db:migrate": "dotenv -- turbo run db:migrate",
-		"db:deploy": "dotenv -- turbo run db:deploy"
+		"db:push": "dotenv -- turbo run db:push"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.4",

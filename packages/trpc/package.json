@@ -18,6 +18,7 @@
 		"@types/react": "^19.1.13",
 		"@workspace/auth": "workspace:*",
 		"@workspace/db": "workspace:*",
+		"@workspace/lib": "workspace:*",
 		"next": "^15.5.3",
 		"server-only": "^0.0.1",
 		"superjson": "^2.2.2",

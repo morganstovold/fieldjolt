@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"db:generate": "prisma generate",
-		"db:deploy": "prisma db push"
+		"db:push": "prisma db push"
 	},
 	"dependencies": {
 		"@prisma/adapter-pg": "^6.16.3",

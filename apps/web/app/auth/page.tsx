@@ -18,6 +18,7 @@ import { MailIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { AuthLayoutWrapper } from "@/components/auth/AuthLayoutWrapper";
 import { EMAIL_REGEX } from "@/lib/utils";
 
 export default function AuthPage() {
@@ -26,7 +27,17 @@ export default function AuthPage() {
 	const router = useRouter();
 
 	return (
-		<main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background-lighter to-background">
+		<AuthLayoutWrapper
+			title="Welcome back"
+			description="Sign in to your FieldJolt account"
+			testimonial={{
+				quote:
+					"FieldJolt transformed how we manage our HVAC business. Scheduling is effortless, and our techs love the mobile app.",
+				author: "Mike Johnson",
+				role: "Owner",
+				company: "Johnson HVAC Services",
+			}}
+		>
 			<form
 				onSubmit={async (e) => {
 					e.preventDefault();
@@ -52,13 +63,9 @@ export default function AuthPage() {
 						router.push("/auth/magic");
 					});
 				}}
-				className="flex w-full max-w-sm flex-col gap-6"
+				className="flex w-full flex-col gap-6"
 			>
-				<div className="flex flex-col gap-4 text-center">
-					<h1 className="font-bold text-2xl">FieldJolt</h1>
-					<p>Sign in to your account</p>
-				</div>
-				<div className="flex flex-col gap-4">
+				<div className="space-y-3">
 					<Button
 						disabled={transition}
 						onClick={() =>
@@ -69,8 +76,9 @@ export default function AuthPage() {
 							})
 						}
 						variant="outline"
+						className="w-full"
 					>
-						<GoogleIcon className="size-4" /> Google
+						<GoogleIcon className="size-4" /> Continue with Google
 					</Button>
 					<Button
 						disabled={transition}
@@ -82,11 +90,14 @@ export default function AuthPage() {
 							})
 						}
 						variant="outline"
+						className="w-full"
 					>
-						<GithubIcon className="size-4" /> Github
+						<GithubIcon className="size-4" /> Continue with Github
 					</Button>
 				</div>
+
 				<FieldSeparator>or</FieldSeparator>
+
 				<Field>
 					<InputGroup>
 						<InputGroupAddon>
@@ -101,17 +112,23 @@ export default function AuthPage() {
 					</InputGroup>
 					<FieldError>{error}</FieldError>
 				</Field>
-				<Button type="submit" disabled={transition}>
-					{transition ? <Spinner /> : "Continue"}
+
+				<Button type="submit" disabled={transition} className="w-full">
+					{transition ? <Spinner /> : "Continue with Email"}
 				</Button>
-				<p className="text-center text-muted-foreground text-sm">
+
+				<p className="text-center text-muted-foreground text-xs">
 					By continuing, you agree to our{" "}
-					<Link href="#" className="underline hover:text-primary">
-						Terms and Conditions
+					<Link href="/terms" className="underline hover:text-primary">
+						Terms
+					</Link>{" "}
+					and{" "}
+					<Link href="/privacy" className="underline hover:text-primary">
+						Privacy Policy
 					</Link>
 					.
 				</p>
 			</form>
-		</main>
+		</AuthLayoutWrapper>
 	);
 }

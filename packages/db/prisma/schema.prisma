@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-    provider     = "postgresql"
-    url          = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -11,15 +11,16 @@ generator client {
 }
 
 model User {
-    id            String    @id
-    name          String
-    email         String
-    emailVerified Boolean   @default(false)
-    image         String?
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @default(now()) @updatedAt
-    sessions      Session[]
-    accounts      Account[]
+    id                 String               @id
+    name               String
+    email              String
+    emailVerified      Boolean              @default(false)
+    image              String?
+    createdAt          DateTime             @default(now())
+    updatedAt          DateTime             @default(now()) @updatedAt
+    sessions           Session[]
+    accounts           Account[]
+    OrganizationMember OrganizationMember[]
 
     @@unique([email])
     @@map("user")
@@ -70,4 +71,74 @@ model Verification {
     updatedAt  DateTime @default(now()) @updatedAt
 
     @@map("verification")
+}
+
+model Organizations {
+    id   String @id @default(cuid(2))
+    name String
+    slug String @unique
+
+    // Organization Settings
+    logo String?
+    businessType String? @map("business_type") // e.g. "plumbing", "hvac", "landscaping", ect.
+    phone String?
+    referralSource String? @map("referral_source") // e.g. "google", "facebook", ect.
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    // Relations
+    Location           Location[]
+    OrganizationMember OrganizationMember[]
+
+    @@index([slug])
+    @@map("organizations")
+}
+
+model Location {
+    id       String  @id @default(cuid(2))
+    name     String
+    slug     String
+    address  String?
+    city     String?
+    state    String?
+    zip      String?
+    phone    String?
+    email    String?
+    timezone String?
+
+    isActive Boolean @default(true) @map("is_active")
+
+    // Relations
+    organizationId String        @map("organization_id")
+    organization   Organizations @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@unique([organizationId, slug])
+    @@index([organizationId])
+    @@index([organizationId, isActive])
+    @@index([slug])
+    @@map("locations")
+}
+
+model OrganizationMember {
+    id          String   @id @default(cuid(2))
+    locationIds String[] @map("location_ids") // Empty array - all locations
+
+    // Relations
+    organizationId String        @map("organization_id")
+    organization   Organizations @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+    userId String @map("user_id")
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@unique([organizationId, userId])
+    @@index([organizationId])
+    @@index([userId])
+    @@map("organization_members")
 }

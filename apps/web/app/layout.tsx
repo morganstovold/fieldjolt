@@ -1,5 +1,6 @@
 import "@workspace/ui/globals.css";
 
+import { Analytics } from "@vercel/analytics/next";
 import { SITE_CONFIG } from "@workspace/config/site";
 import type { Metadata } from "next";
 import { Birthstone, Geist, Geist_Mono } from "next/font/google";
@@ -36,6 +37,7 @@ export default function RootLayout({
 				className={`${fontSans.variable} ${fontMono.variable} ${fontBirthStone.variable} font-sans antialiased`}
 			>
 				<Providers>{children}</Providers>
+				<Analytics />
 			</body>
 		</html>
 	);
