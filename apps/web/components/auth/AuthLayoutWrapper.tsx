@@ -12,6 +12,18 @@ type AuthLayoutWrapperProps = {
 		company: string;
 	};
 	showDashboardPreview?: boolean;
+	maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
+};
+
+const maxWidthClasses = {
+	sm: "max-w-sm",
+	md: "max-w-md",
+	lg: "max-w-lg",
+	xl: "max-w-xl",
+	"2xl": "max-w-2xl",
+	"3xl": "max-w-3xl",
+	"4xl": "max-w-4xl",
+	"5xl": "max-w-5xl",
 };
 
 export function AuthLayoutWrapper({
@@ -20,18 +32,19 @@ export function AuthLayoutWrapper({
 	description,
 	testimonial,
 	showDashboardPreview = false,
+	maxWidth = "lg",
 }: AuthLayoutWrapperProps) {
 	return (
 		<div className="grid min-h-screen overflow-hidden lg:grid-cols-2">
 			{/* Left side - Form content (scrollable) */}
 			<ScrollArea className="h-screen">
 				<div className="flex min-h-screen items-center justify-center p-8 py-16 lg:p-12 lg:py-32">
-					<div className="w-full max-w-md space-y-6">
+					<div className={`w-full space-y-6 ${maxWidthClasses[maxWidth]}`}>
 						{/* Logo/Header */}
 						<div className="space-y-2 text-center lg:text-left">
-							<h1 className="font-bold text-3xl tracking-tight">
-								{title || "FieldJolt"}
-							</h1>
+							{title && (
+								<h1 className="font-bold text-3xl tracking-tight">{title}</h1>
+							)}
 							{description && (
 								<p className="text-muted-foreground">{description}</p>
 							)}

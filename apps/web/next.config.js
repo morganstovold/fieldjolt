@@ -2,6 +2,7 @@ import "./env.js";
 
 /** @type {import('next').NextConfig} */
 const config = {
+	devIndicators: false,
 	transpilePackages: [
 		"@workspace/ui",
 		"@workspace/auth",

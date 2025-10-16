@@ -1,16 +1,59 @@
-import { api } from "@workspace/trpc/rsc";
+import { caller } from "@workspace/trpc/rsc";
+import { buttonVariants } from "@workspace/ui/components/button";
+import {
+	Item,
+	ItemActions,
+	ItemContent,
+	ItemDescription,
+	ItemMedia,
+	ItemTitle,
+} from "@workspace/ui/components/item";
+import { Building2Icon, ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AuthLayoutWrapper } from "@/components/auth/AuthLayoutWrapper";
 
 export default async function DashboardPage() {
-	const orgs = await api.organizations.list();
+	const orgs = await caller.organization.list();
 
 	if (orgs.length === 0) {
 		redirect("/dashboard/new");
 	}
 
 	if (orgs.length === 1) {
-		redirect(`/dashboard/${orgs[0]?.organization.slug}`);
+		redirect(`/dashboard/${orgs[0]?.slug}`);
 	}
 
-	redirect("/dashboard/select");
+	return (
+		<AuthLayoutWrapper
+			title="Select Organization"
+			description="Choose which business you'd like to access"
+			showDashboardPreview
+		>
+			<div className="space-y-4">
+				{orgs.map((org, index) => (
+					<Item key={index} variant="outline" asChild>
+						<Link href={`/dashboard/${org.slug}`}>
+							<ItemMedia>
+								<Building2Icon className="size-5" />
+							</ItemMedia>
+							<ItemContent>
+								<ItemTitle>{org.name}</ItemTitle>
+								<ItemDescription>fieldjolt.com/{org.slug}</ItemDescription>
+							</ItemContent>
+							<ItemActions>
+								<ChevronRightIcon className="size-4" />
+							</ItemActions>
+						</Link>
+					</Item>
+				))}
+				<Link
+					href="/dashboard/new"
+					className={buttonVariants({ className: "w-full", size: "lg" })}
+				>
+					Create New Organization
+				</Link>
+			</div>
+		</AuthLayoutWrapper>
+	);
 }

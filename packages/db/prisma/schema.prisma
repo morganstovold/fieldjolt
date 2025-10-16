@@ -7,20 +7,25 @@ datasource db {
 }
 
 generator client {
-    provider = "prisma-client-js"
+    provider = "prisma-client"
+    output   = "../src/generated"
 }
 
 model User {
-    id                 String               @id
-    name               String
-    email              String
-    emailVerified      Boolean              @default(false)
-    image              String?
-    createdAt          DateTime             @default(now())
-    updatedAt          DateTime             @default(now()) @updatedAt
-    sessions           Session[]
-    accounts           Account[]
-    OrganizationMember OrganizationMember[]
+    id            String    @id
+    name          String
+    email         String
+    emailVerified Boolean   @default(false)
+    image         String?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @default(now()) @updatedAt
+    sessions      Session[]
+    accounts      Account[]
+
+    OrganizationMember         OrganizationMember[]
+    CrmEntry                   CrmEntry[]
+    CrmEntityColumnDefinitions CrmEntityColumnDefinitions[]
+    CrmActivityLog             CrmActivityLog[]
 
     @@unique([email])
     @@map("user")
@@ -73,16 +78,34 @@ model Verification {
     @@map("verification")
 }
 
-model Organizations {
+model Organization {
     id   String @id @default(cuid(2))
     name String
     slug String @unique
 
-    // Organization Settings
-    logo String?
-    businessType String? @map("business_type") // e.g. "plumbing", "hvac", "landscaping", ect.
-    phone String?
+    businessType   String? @map("business_type") // e.g. "plumbing", "hvac", "landscaping", ect.
     referralSource String? @map("referral_source") // e.g. "google", "facebook", ect.
+
+    // Stripe Billing
+    stripeCustomerId     String? @unique @map("stripe_customer_id")
+    stripeSubscriptionId String? @unique @map("stripe_subscription_id")
+    billingEmail         String? @map("billing_email")
+
+    subscriptionStatus String?   @map("subscription_status") // "trialing", "active", "past_due", "canceled"
+    currentPeriodEnd   DateTime? @map("current_period_end")
+    cancelAtPeriodEnd  Boolean?  @map("cancel_at_period_end")
+
+    // Business Profile
+    teamSize         String? @map("team_size") // e.g. "2-5", "51+"
+    monthlyJobs      String? @map("monthly_jobs") // e.g. "26-50", "251+"
+    biggestChallenge String? @map("biggest_challenge") // e.g. "scheduling", "invoicing"
+
+    // onboarding state
+    onboardingCompleted Boolean @default(false) @map("onboarding_completed")
+
+    // selected plan & features.
+    trialStartedAt DateTime? @map("trial_started_at")
+    trialEndedAt   DateTime? @map("trial_ended_at")
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -99,6 +122,7 @@ model Location {
     id       String  @id @default(cuid(2))
     name     String
     slug     String
+    type     String
     address  String?
     city     String?
     state    String?
@@ -110,8 +134,14 @@ model Location {
     isActive Boolean @default(true) @map("is_active")
 
     // Relations
-    organizationId String        @map("organization_id")
-    organization   Organizations @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    organizationId             String                       @map("organization_id")
+    organization               Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    CrmEntityType              CrmEntityType[]
+    CrmEntityColumnDefinitions CrmEntityColumnDefinitions[]
+    CrmComputedFieldValue      CrmComputedFieldValue[]
+    CrmEntry                   CrmEntry[]
+    CrmActivityLog             CrmActivityLog[]
+    LocationAccess             LocationAccess[]
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -124,15 +154,17 @@ model Location {
 }
 
 model OrganizationMember {
-    id          String   @id @default(cuid(2))
-    locationIds String[] @map("location_ids") // Empty array - all locations
+    id                 String @id @default(cuid(2))
+    locationAccessType String @default("specific") @map("location_access_type") // "all", "specific"
 
     // Relations
-    organizationId String        @map("organization_id")
-    organization   Organizations @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    organizationId String       @map("organization_id")
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
     userId String @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    LocationAccess LocationAccess[]
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -141,4 +173,259 @@ model OrganizationMember {
     @@index([organizationId])
     @@index([userId])
     @@map("organization_members")
+}
+
+model LocationAccess {
+    id String @id @default(cuid(2))
+
+    memberId String             @map("member_id")
+    member   OrganizationMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+    locationId String   @map("location_id")
+    location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+    @@unique([memberId, locationId])
+}
+
+// ============================================================================
+// CRM CORE
+// ============================================================================
+
+model CrmEntityType {
+    id String @id @default(cuid(2))
+
+    // Identity
+    name          String // "customers", "vendors", "properties"
+    label         String // "Customers", "Vendors", "Properties"
+    labelSingular String // "Customer", "Vendor", "Property"
+    description   String?
+    icon          String? // Icon identifier
+    color         String? // Brand color for this entity type
+
+    // Primary Name Configuration
+    primaryNameLabel       String @default("Name") @map("primary_name_label")
+    primaryNamePlaceholder String @map("primary_name_placeholder")
+
+    // Settings
+    isActive     Boolean @default(true) @map("is_active")
+    displayOrder Int     @default(0) @map("display_order")
+
+    // Relations
+    locationId String   @map("location_id")
+    location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+    entries                    CrmEntry[]
+    CrmEntityColumnDefinitions CrmEntityColumnDefinitions[]
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@unique([locationId, name])
+    @@index([locationId])
+    @@index([locationId, isActive])
+    @@index([name])
+    @@index([displayOrder])
+    @@map("crm_entity_types")
+}
+
+model CrmEntry {
+    id String @id @default(cuid(2))
+
+    // Settings
+    primaryName String @map("primary_name") // The main identifier
+    status      String @default("active") // "active", "inactive", "archived"
+
+    customFields  Json @default("{}") @map("custom_fields")
+    computedCache Json @default("{}") @map("computed_cache")
+
+    // Relations
+    entityTypeId String        @map("entity_type_id")
+    entityType   CrmEntityType @relation(fields: [entityTypeId], references: [id], onDelete: Cascade)
+
+    locationId String   @map("location_id")
+    location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+    createdById String @map("created_by")
+    createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+    CrmComputedFieldValue CrmComputedFieldValue[]
+    CrmActivityLog        CrmActivityLog[]
+
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime  @updatedAt @map("updated_at")
+    deletedAt DateTime? @map("deleted_at") // Soft delete
+
+    @@index([locationId])
+    @@index([locationId, entityTypeId])
+    @@index([locationId, entityTypeId, status])
+    @@index([locationId, primaryName])
+    @@index([entityTypeId])
+    @@index([primaryName])
+    @@index([status])
+    @@index([createdAt])
+    @@index([deletedAt])
+    @@index([createdById])
+    @@map("crm_entries")
+}
+
+model CrmEntityColumnDefinitions {
+    id String @id @default(cuid(2))
+
+    // Settings
+    fieldName   String  @map("field_name") // snake_case field name
+    label       String // Display label
+    description String? // help text / tooltip
+
+    fieldType String @map("field_type") // "text", "number", "currency", "date", "select", etc.
+    dataType  String @map("data_type") // "string", "number", "boolean", "date", "json"
+
+    // Validation Rules
+    isRequired      Boolean @default(false) @map("is_required")
+    isUnique        Boolean @default(false) @map("is_unique")
+    validationRules Json?   @map("validation_rules")
+
+    // Display Settings
+    displayOrder   Int     @default(0) @map("display_order")
+    defaultVisible Boolean @default(true) @map("default_visible")
+
+    // Computed field configuration
+    isComputed     Boolean @default(false) @map("is_computed")
+    computedConfig Json?   @map("computed_config")
+
+    // Reference field configuration  
+    isReference     Boolean @default(false) @map("is_reference")
+    referenceConfig Json?   @map("reference_config")
+
+    // Select/dropdown configuration
+    selectOptions      Json?   @map("select_options")
+    allowCustomOptions Boolean @default(false) @map("allow_custom_options")
+
+    // Formatting
+    formatting Json? // prefix, suffix, decimals, dateFormat, etc.
+
+    // UI configuration
+    uiConfig Json? @map("ui_config")
+
+    // Conditional visibility
+    conditionalVisibility Json? @map("conditional_visibility")
+
+    // Search & filter capabilities
+    isSearchable Boolean @default(true) @map("is_searchable")
+    isFilterable Boolean @default(true) @map("is_filterable")
+    isSortable   Boolean @default(true) @map("is_sortable")
+
+    // System protection
+    isSystemField Boolean @default(false) @map("is_system_field")
+
+    // Relations
+    locationId String   @map("location_id")
+    location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+    entityTypeId String        @map("entity_type_id")
+    entityType   CrmEntityType @relation(fields: [entityTypeId], references: [id], onDelete: Cascade)
+
+    createdBy     String @map("created_by")
+    createdByUser User   @relation(fields: [createdBy], references: [id], onDelete: Restrict)
+
+    CrmComputedFieldValue CrmComputedFieldValue[]
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@unique([locationId, entityTypeId, fieldName])
+    @@index([locationId])
+    @@index([locationId, entityTypeId])
+    @@index([entityTypeId])
+    @@index([fieldName])
+    @@index([defaultVisible])
+    @@index([displayOrder])
+    @@index([isComputed])
+    @@index([isSystemField])
+    @@map("crm_column_definitions")
+}
+
+model CrmComputedFieldValue {
+    id String @id @default(cuid(2))
+
+    // Relations
+    locationId String   @map("location_id")
+    location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+    entryId String   @map("entry_id")
+    entry   CrmEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+    columnId String                     @map("column_id")
+    column   CrmEntityColumnDefinitions @relation(fields: [columnId], references: [id], onDelete: Cascade)
+
+    // Computed value (stored as JSON to handle any type)
+    computedValue Json @map("computed_value")
+
+    // Cache management
+    computedAt DateTime  @default(now()) @map("computed_at")
+    expiresAt  DateTime? @map("expires_at")
+
+    @@unique([entryId, columnId])
+    @@index([locationId])
+    @@index([entryId])
+    @@index([columnId])
+    @@index([expiresAt])
+    @@map("crm_computed_field_values")
+}
+
+model CrmActivityLog {
+    id String @id @default(cuid(2))
+
+    action   String // "created", "updated", "deleted", "restored", "field_changed"
+    changes  Json? // { "field": { "old": value, "new": value } }
+    metadata Json? // { bulkOperation, importId, integrationSource, reason }
+
+    // Relations
+
+    entityType String @map("entity_type") // "crm_entry", "crm_column_definition", "crm_entity_type"
+    entityId   String @map("entity_id") // ID of the affected entity
+
+    locationId String   @map("location_id")
+    location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+    entryId String?   @map("entry_id")
+    entry   CrmEntry? @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+    userId String @map("user_id")
+    user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@index([locationId])
+    @@index([locationId, entityType])
+    @@index([locationId, entryId])
+    @@index([entityType, entityId])
+    @@index([entryId])
+    @@index([userId])
+    @@index([action])
+    @@index([createdAt])
+    @@index([entityType, action])
+    @@map("crm_activity_logs")
+}
+
+model CrmColumnTemplate {
+    id String @id @default(cuid(2))
+
+    name        String // "Construction Company", "Lawn Care Service"
+    description String?
+    industry    String? // "construction", "field_services"
+    icon        String?
+
+    entityTypeConfig Json @map("entity_type_config")
+    columns          Json // Array of column definitions
+
+    isPublic   Boolean @default(true) @map("is_public")
+    isActive   Boolean @default(true) @map("is_active")
+    usageCount Int     @default(0) @map("usage_count")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@index([industry])
+    @@index([isPublic, isActive])
+    @@map("crm_column_templates")
 }

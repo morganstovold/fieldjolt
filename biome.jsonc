@@ -23,7 +23,9 @@
 			},
 			"correctness": {
 				"noInvalidPositionAtImportRule": "off",
-				"useUniqueElementIds": "off"
+				"useUniqueElementIds": "off",
+				"noUnusedVariables": "off",
+				"noUnusedFunctionParameters": "off"
 			},
 			"nursery": {
 				"useSortedClasses": {
