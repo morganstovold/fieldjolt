@@ -57,7 +57,7 @@ export default function NewOrganizationPage() {
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 
 	const createOrganization = useMutation(
-		trpc.organization.create.mutationOptions({
+		trpc.organizations.create.mutationOptions({
 			onSuccess: (data) => {
 				startTransition(() => {
 					router.push(`/dashboard/${data.slug}/onboarding`);
