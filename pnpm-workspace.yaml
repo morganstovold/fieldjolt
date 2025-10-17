@@ -3,7 +3,6 @@ packages:
   - packages/*
 
 onlyBuiltDependencies:
-  - '@prisma/client'
   - '@tailwindcss/oxide'
   - core-js-pure
   - esbuild
