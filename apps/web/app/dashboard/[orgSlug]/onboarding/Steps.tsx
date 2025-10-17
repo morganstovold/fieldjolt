@@ -19,7 +19,7 @@ export default function OrganizationOnboardingSteps() {
 	const router = useRouter();
 	const { orgSlug } = useParams<{ orgSlug: string }>();
 	const completeOnboarding = useMutation(
-		trpc.organization.completeOnboarding.mutationOptions({
+		trpc.organizations.completeOnboarding.mutationOptions({
 			onSuccess: (data) => {
 				router.push(`/dashboard/${orgSlug}/${data.locationSlug}`);
 			},
