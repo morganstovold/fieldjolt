@@ -14,14 +14,14 @@ import { redirect } from "next/navigation";
 import { AuthLayoutWrapper } from "@/components/auth/AuthLayoutWrapper";
 
 export default async function DashboardPage() {
-	const orgs = await caller.organization.list();
+	const user = await caller.users.me();
 
-	if (orgs.length === 0) {
+	if (user.organizations.length === 0) {
 		redirect("/dashboard/new");
 	}
 
-	if (orgs.length === 1) {
-		redirect(`/dashboard/${orgs[0]?.slug}`);
+	if (user.organizations.length === 1) {
+		redirect(`/dashboard/${user.organizations[0]?.slug}`);
 	}
 
 	return (
@@ -31,7 +31,7 @@ export default async function DashboardPage() {
 			showDashboardPreview
 		>
 			<div className="space-y-4">
-				{orgs.map((org, index) => (
+				{user.organizations.map((org, index) => (
 					<Item key={index} variant="outline" asChild>
 						<Link href={`/dashboard/${org.slug}`}>
 							<ItemMedia>
