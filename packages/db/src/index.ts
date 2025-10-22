@@ -18,3 +18,5 @@ export const db = globalForPrisma.prisma ?? createPrismaClient();
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
 
 export type { PrismaClient } from "./generated/client";
+
+export { PermissionScope } from "./generated/client";

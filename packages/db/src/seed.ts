@@ -49,7 +49,6 @@ async function main() {
 					OrganizationMember: {
 						create: {
 							userId: user.id,
-							locationAccessType: "all",
 						},
 					},
 				},

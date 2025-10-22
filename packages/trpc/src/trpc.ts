@@ -78,40 +78,38 @@ export const organizationProcedure = protectedProcedure.use(
 	},
 );
 
-export const locationProcedure = protectedProcedure.use(
-	async ({ ctx, next }) => {
-		const orgSlug = ctx.headers.get("x-org");
-		const locationSlug = ctx.headers.get("x-location");
+export const teamProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+	const orgSlug = ctx.headers.get("x-org");
+	const teamSlug = ctx.headers.get("x-team");
 
-		if (!orgSlug || !locationSlug) {
-			throw new TRPCError({ code: "UNAUTHORIZED" });
-		}
+	if (!orgSlug || !teamSlug) {
+		throw new TRPCError({ code: "UNAUTHORIZED" });
+	}
 
-		const hasAccess = await ctx.db.location.count({
-			where: {
-				slug: locationSlug,
-				organization: {
-					slug: orgSlug,
-					OrganizationMember: {
-						some: {
-							userId: ctx.session.user.id,
-						},
+	const hasAccess = await ctx.db.team.count({
+		where: {
+			slug: teamSlug,
+			organization: {
+				slug: orgSlug,
+				OrganizationMember: {
+					some: {
+						userId: ctx.session.user.id,
 					},
 				},
 			},
-		});
+		},
+	});
 
-		if (hasAccess === 0) {
-			throw new TRPCError({ code: "UNAUTHORIZED" });
-		}
+	if (hasAccess === 0) {
+		throw new TRPCError({ code: "UNAUTHORIZED" });
+	}
 
-		return next({
-			ctx: {
-				...ctx,
-				location: locationSlug,
-			},
-		});
-	},
-);
+	return next({
+		ctx: {
+			...ctx,
+			team: teamSlug,
+		},
+	});
+});
 
 export { fetchRequestHandler } from "@trpc/server/adapters/fetch";
